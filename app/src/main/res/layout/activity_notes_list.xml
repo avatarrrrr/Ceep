@@ -6,4 +6,35 @@
     android:layout_height="match_parent"
     tools:context=".ui.activity.NotesListActivity">
 
+    <ListView
+        android:id="@+id/notes_list"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/notes_list_insert_note"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:listitem="@layout/item_note" />
+
+    <View
+        android:id="@+id/notes_list_gradient"
+        android:layout_width="0dp"
+        android:layout_height="5dp"
+        android:background="@drawable/gradient_background_insert_note"
+        app:layout_constraintBottom_toTopOf="@id/notes_list_insert_note"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/notes_list_insert_note"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="@string/notes_list_new_note"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

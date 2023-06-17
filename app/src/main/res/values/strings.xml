@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Ceep</string>
+    <string name="notes_list_new_note">New note</string>
 </resources>
