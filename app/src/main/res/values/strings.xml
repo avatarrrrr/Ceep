@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Ceep</string>
     <string name="notes_list_new_note">New note</string>
+    <string name="new_note_form_title_hint">Título</string>
+    <string name="new_note_form_description_hint">Descrição</string>
+    <string name="menu_form_save_note_button_title">Save note</string>
 </resources>
