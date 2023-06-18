@@ -3,7 +3,6 @@ package br.com.alura.ceep.ui.activity;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.Collections;
@@ -18,9 +17,6 @@ public class NotesListActivity extends AppCompatActivity {
     final NoteDAO notesDAO = new NoteDAO();
     NotesListAdapter adapter;
     RecyclerView notesListView;
-
-    RecyclerView.LayoutManager layoutManager;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,11 +38,9 @@ public class NotesListActivity extends AppCompatActivity {
 
     private void setListArtifacts() {
         adapter = new NotesListAdapter(notesDAO.all(), this);
-        layoutManager = new LinearLayoutManager(this);
     }
 
     private void configListView() {
         notesListView.setAdapter(adapter);
-        notesListView.setLayoutManager(layoutManager);
     }
 }

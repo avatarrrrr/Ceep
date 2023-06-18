@@ -14,7 +14,7 @@ import java.util.List;
 import br.com.alura.ceep.R;
 import br.com.alura.ceep.model.Note;
 
-public class NotesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.NotesListAdapterHolder> {
     final List<Note> notes;
     final Context context;
 
@@ -25,16 +25,16 @@ public class NotesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public NotesListAdapter.NotesListAdapterHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         final View newView = LayoutInflater.from(context).inflate(R.layout.item_note, parent, false);
         return new NotesListAdapterHolder(newView);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull NotesListAdapter.NotesListAdapterHolder holder, int position) {
         final Note note = notes.get(position);
-        ((NotesListAdapterHolder) holder).titleView.setText(note.getTitle());
-        ((NotesListAdapterHolder) holder).descriptionView.setText(note.getDescription());
+        holder.bindNote(note);
+
     }
 
     @Override
@@ -42,14 +42,19 @@ public class NotesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         return notes.size();
     }
 
-    private static class NotesListAdapterHolder extends RecyclerView.ViewHolder {
-        public final TextView titleView;
-        public final TextView descriptionView;
+    public static class NotesListAdapterHolder extends RecyclerView.ViewHolder {
+        private final TextView titleView;
+        private final TextView descriptionView;
 
         public NotesListAdapterHolder(@NonNull View itemView) {
             super(itemView);
             titleView = itemView.findViewById(R.id.item_note_title);
             descriptionView = itemView.findViewById(R.id.item_note_description);
+        }
+
+        void bindNote(Note note) {
+            titleView.setText(note.getTitle());
+            descriptionView.setText(note.getDescription());
         }
     }
 }
