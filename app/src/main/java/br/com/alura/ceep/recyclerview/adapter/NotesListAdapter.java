@@ -42,6 +42,11 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
         return notes.size();
     }
 
+    public void insert(Note note){
+        notes.add(note);
+        notifyItemInserted(notes.indexOf(note));
+    }
+
     public static class NotesListAdapterHolder extends RecyclerView.ViewHolder {
         private final TextView titleView;
         private final TextView descriptionView;

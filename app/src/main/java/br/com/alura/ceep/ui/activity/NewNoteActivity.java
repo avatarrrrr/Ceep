@@ -9,11 +9,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import br.com.alura.ceep.R;
-import br.com.alura.ceep.dao.NoteDAO;
 import br.com.alura.ceep.model.Note;
 
 public class NewNoteActivity extends AppCompatActivity {
-    final private NoteDAO noteDAO = new NoteDAO();
     EditText titleEditText;
     EditText descriptionEditText;
 
@@ -44,7 +42,8 @@ public class NewNoteActivity extends AppCompatActivity {
     private void saveNote(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.menu_form_save_note_button) {
             final Note newNote = new Note(titleEditText.getText().toString(), descriptionEditText.getText().toString());
-            noteDAO.insert(newNote);
+            getIntent().putExtra(ActivityConstants.NOTE_TRANSFER_KEY, newNote);
+            setResult(ActivityConstants.RESULT_OK , getIntent());
             finish();
         }
     }

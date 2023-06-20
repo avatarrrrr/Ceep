@@ -4,18 +4,23 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import br.com.alura.ceep.R;
 import br.com.alura.ceep.dao.NoteDAO;
+import br.com.alura.ceep.model.Note;
 import br.com.alura.ceep.recyclerview.adapter.NotesListAdapter;
 
 public class NotesListActivity extends AppCompatActivity {
     final NoteDAO notesDAO = new NoteDAO();
+    final ActivityResultLauncher<Intent> activityResultLauncher = registerActivityResult();
     NotesListAdapter adapter;
     RecyclerView notesListView;
     TextView insertView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,11 +32,19 @@ public class NotesListActivity extends AppCompatActivity {
         configInsertNoteOnClickBehavior();
     }
 
-    @Override
-    protected void onResume() {
-        setListArtifacts();
-        configListView();
-        super.onResume();
+    private ActivityResultLauncher<Intent> registerActivityResult() {
+        return registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            if (result.getResultCode() == ActivityConstants.RESULT_OK && result.getData() != null) {
+                final Intent data = result.getData();
+                final Note note = data.getParcelableExtra(ActivityConstants.NOTE_TRANSFER_KEY);
+                insertNote(note);
+            }
+        });
+    }
+
+    private void insertNote(Note note) {
+        notesDAO.insert(note);
+        adapter.insert(note);
     }
 
     private void bindViews() {
@@ -48,11 +61,13 @@ public class NotesListActivity extends AppCompatActivity {
     }
 
     private void configInsertNoteOnClickBehavior() {
-        insertView.setOnClickListener(v -> startActivity(
-                new Intent(
-                        NotesListActivity.this,
-                        NewNoteActivity.class
+        insertView.setOnClickListener(
+                v -> activityResultLauncher.launch(
+                        new Intent(
+                                NotesListActivity.this,
+                                NewNoteActivity.class
+                        )
                 )
-        ));
+        );
     }
 }
