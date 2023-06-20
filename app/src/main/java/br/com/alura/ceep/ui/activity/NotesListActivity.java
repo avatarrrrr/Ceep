@@ -3,6 +3,7 @@ package br.com.alura.ceep.ui.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultLauncher;
@@ -58,7 +59,7 @@ public class NotesListActivity extends AppCompatActivity {
     }
 
     private void setListArtifacts() {
-        adapter = new NotesListAdapter(notesDAO.all(), this);
+        adapter = new NotesListAdapter(notesDAO.all(), this, note -> Toast.makeText(this, note.getTitle(), Toast.LENGTH_SHORT).show());
     }
 
     private void configListView() {
