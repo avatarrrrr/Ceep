@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,13 +34,17 @@ public class NotesListActivity extends AppCompatActivity {
     }
 
     private ActivityResultLauncher<Intent> registerActivityResult() {
-        return registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-            if (result.getResultCode() == ActivityConstants.RESULT_OK && result.getData() != null) {
-                final Intent data = result.getData();
-                final Note note = data.getParcelableExtra(ActivityConstants.NOTE_TRANSFER_KEY);
-                insertNote(note);
-            }
-        });
+        return registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::onActivityResult);
+    }
+
+    private void onActivityResult(ActivityResult result) {
+        final Intent intent = result.getData();
+        final boolean resultCodeIsValid = result.getResultCode() == ActivityConstants.RESULT_OK;
+
+        if (resultCodeIsValid && intent != null && intent.hasExtra(ActivityConstants.NOTE_TRANSFER_KEY)) {
+            final Note note = intent.getParcelableExtra(ActivityConstants.NOTE_TRANSFER_KEY);
+            insertNote(note);
+        }
     }
 
     private void insertNote(Note note) {

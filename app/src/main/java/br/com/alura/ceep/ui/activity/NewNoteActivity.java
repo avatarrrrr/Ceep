@@ -1,5 +1,6 @@
 package br.com.alura.ceep.ui.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -42,8 +43,8 @@ public class NewNoteActivity extends AppCompatActivity {
     private void saveNote(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.menu_form_save_note_button) {
             final Note newNote = new Note(titleEditText.getText().toString(), descriptionEditText.getText().toString());
-            getIntent().putExtra(ActivityConstants.NOTE_TRANSFER_KEY, newNote);
-            setResult(ActivityConstants.RESULT_OK , getIntent());
+            final Intent intent = new Intent().putExtra(ActivityConstants.NOTE_TRANSFER_KEY, newNote);
+            setResult(ActivityConstants.RESULT_OK , intent);
             finish();
         }
     }
