@@ -19,10 +19,6 @@ public class NoteDAO {
         NoteDAO.NOTES.addAll(Arrays.asList(notes));
     }
 
-    public void insertList(List<Note> notes) {
-        NOTES.addAll(notes);
-    }
-
     public void update(int position, Note note) {
         NOTES.set(position, note);
     }

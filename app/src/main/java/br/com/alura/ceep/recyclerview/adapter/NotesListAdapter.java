@@ -49,6 +49,11 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
         notifyItemInserted(notes.indexOf(note));
     }
 
+    public void replaceNoteInPosition(Note note, int notePosition) {
+        notes.set(notePosition, note);
+        notifyItemChanged(notePosition);
+    }
+
     public class NotesListAdapterHolder extends RecyclerView.ViewHolder {
         private final TextView titleView;
         private final TextView descriptionView;
@@ -65,10 +70,10 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
         }
 
         private void setClickBehavior(Note note) {
-            this.itemView.setOnClickListener(v -> onClickBehavior.onItemClick(note));
+            this.itemView.setOnClickListener(v -> onClickBehavior.onItemClick(note, getAdapterPosition()));
         }
 
-        private void bindNote(Note note) {
+        private void bindNote(@NonNull Note note) {
             titleView.setText(note.getTitle());
             descriptionView.setText(note.getDescription());
         }

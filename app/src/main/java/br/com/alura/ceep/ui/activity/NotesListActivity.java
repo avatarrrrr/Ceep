@@ -3,11 +3,10 @@ package br.com.alura.ceep.ui.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,9 +14,11 @@ import br.com.alura.ceep.R;
 import br.com.alura.ceep.dao.NoteDAO;
 import br.com.alura.ceep.model.Note;
 import br.com.alura.ceep.recyclerview.adapter.NotesListAdapter;
+import br.com.alura.ceep.ui.activity.controllers.NotesListActivityController;
+import br.com.alura.ceep.ui.adapter.listener.OnItemClickListener;
 
 public class NotesListActivity extends AppCompatActivity {
-    final NoteDAO notesDAO = new NoteDAO();
+    final NotesListActivityController controller = new NotesListActivityController(this::insertNoteOnAdapter, this::updateNoteOnAdapter);
     final ActivityResultLauncher<Intent> activityResultLauncher = registerActivityResult();
     NotesListAdapter adapter;
     RecyclerView notesListView;
@@ -28,30 +29,18 @@ public class NotesListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notes_list);
+        controller.makeDataTest();
         bindViews();
         setListArtifacts();
         configListView();
         configInsertNoteOnClickBehavior();
     }
 
+
     private ActivityResultLauncher<Intent> registerActivityResult() {
-        return registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::onActivityResult);
+        return registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), controller::onActivityResult);
     }
 
-    private void onActivityResult(ActivityResult result) {
-        final Intent intent = result.getData();
-        final boolean resultCodeIsValid = result.getResultCode() == ActivityConstants.RESULT_OK;
-
-        if (resultCodeIsValid && intent != null && intent.hasExtra(ActivityConstants.NOTE_TRANSFER_KEY)) {
-            final Note note = intent.getParcelableExtra(ActivityConstants.NOTE_TRANSFER_KEY);
-            insertNote(note);
-        }
-    }
-
-    private void insertNote(Note note) {
-        notesDAO.insert(note);
-        adapter.insert(note);
-    }
 
     private void bindViews() {
         notesListView = findViewById(R.id.notes_list);
@@ -59,7 +48,17 @@ public class NotesListActivity extends AppCompatActivity {
     }
 
     private void setListArtifacts() {
-        adapter = new NotesListAdapter(notesDAO.all(), this, note -> Toast.makeText(this, note.getTitle(), Toast.LENGTH_SHORT).show());
+        adapter = new NotesListAdapter(new NoteDAO().all(), this, onItemClickBehavior());
+    }
+
+    @NonNull
+    private OnItemClickListener onItemClickBehavior() {
+        return (note, position) -> {
+            final Intent intent = generateIntentToNewNoteForm();
+            intent.putExtra(ActivityConstants.NOTE_TRANSFER_KEY, note);
+            intent.putExtra(ActivityConstants.NOTE_POSITION_TRANSFER_KEY, position);
+            activityResultLauncher.launch(intent);
+        };
     }
 
     private void configListView() {
@@ -69,11 +68,24 @@ public class NotesListActivity extends AppCompatActivity {
     private void configInsertNoteOnClickBehavior() {
         insertView.setOnClickListener(
                 v -> activityResultLauncher.launch(
-                        new Intent(
-                                NotesListActivity.this,
-                                NewNoteActivity.class
-                        )
+                        generateIntentToNewNoteForm()
                 )
         );
+    }
+
+    @NonNull
+    private Intent generateIntentToNewNoteForm() {
+        return new Intent(
+                NotesListActivity.this,
+                NewNoteActivity.class
+        );
+    }
+
+    private void insertNoteOnAdapter(Note note) {
+        adapter.insert(note);
+    }
+
+    private void updateNoteOnAdapter(Note note, int notePosition) {
+        adapter.replaceNoteInPosition(note, notePosition);
     }
 }
